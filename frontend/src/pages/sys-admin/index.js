@@ -11,6 +11,10 @@ import DesktopDevices from './devices/desktop-devices';
 import MobileDevices from './devices/mobile-devices';
 import DeviceErrors from './devices/devices-errors';
 
+import UsersAll from './users/users-all';
+import UsersAdmin from './users/users-admin';
+import UserInfo from './users/user-info';
+
 import AllRepos from './repos/all-repos';
 import SystemRepo from './repos/system-repo';
 import TrashRepos from './repos/trash-repos';
@@ -112,6 +116,9 @@ class SysAdmin extends React.Component {
             <Groups path={siteRoot + 'sys/groups'} />
             <GroupRepos path={siteRoot + 'sys/groups/:groupID/libraries'} />
             <GroupMembers path={siteRoot + 'sys/groups/:groupID/members'} />
+            <UsersAll path={siteRoot + 'sys/users-all'} />
+            <UsersAdmin path={siteRoot + 'sys/users-admin'} />
+            <UserInfo path={siteRoot + 'sys/user-info/:email'} />
             <FileScanRecords
               path={siteRoot + 'sys/file-scan-records'}
               currentTab={currentTab} 
