@@ -35,12 +35,12 @@ class Content extends Component {
           <table className="table-hover">
             <thead>
               <tr>
-                <th width="12%">{gettext('Name')}</th>
-                <th width="18%">{gettext('Creator')}</th>
-                <th width="18%">{gettext('Role')}</th>
-                <th width="10%">{gettext('Space Used')}</th>
-                <th width="32%">{gettext('Created At')}{' / '}{gettext('Expiration')}</th>
-                <th width="10%">{gettext('Operations')}</th>
+                <th width="20%">{gettext('Name')}</th>
+                <th width="20%">{gettext('Creator')}</th>
+                <th width="20%">{gettext('Role')}</th>
+                <th width="15%">{gettext('Space Used')}</th>
+                <th width="20%">{gettext('Created At')}</th>
+                <th width="5%">{/* Operations */}</th>
               </tr>
             </thead>
             <tbody>
@@ -96,10 +96,8 @@ class Item extends Component {
   }
 
   render() {
-    let {item, availableRoles } = this.props;
-    let { isOpIconShown, isDeleteDialogOpen } = this.state;
-    let iconVisibility = isOpIconShown ? '' : ' invisible';
-    let deleteIconClassName = 'op-icon sf2-icon-delete' + iconVisibility;
+    const { item, availableRoles } = this.props;
+    const { isOpIconShown, isDeleteDialogOpen } = this.state;
 
     let orgName = '<span class="op-target">' + Utils.HTMLescape(item.org_name) + '</span>';
     let deleteDialogMsg = gettext('Are you sure you want to delete {placeholder} ?').replace('{placeholder}', orgName);
@@ -107,8 +105,8 @@ class Item extends Component {
     return (
       <Fragment>
         <tr onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
-          <td><a href={siteRoot + 'sys/organization/' + item.org_id + '/users/'}>{item.org_name}</a></td>
-          <td><a href={siteRoot + 'sys/user-info/' + item.creator_email + '/'}>{item.creator_email}</a></td>
+          <td><a href={`${siteRoot}sys/organization/${item.org_id}/info/`}>{item.org_name}</a></td>
+          <td><a href={`${siteRoot}useradmin/info/${encodeURIComponent(item.creator_email)}/`}>{item.creator_name}</a></td>
           <td>
             <SysAdminUserRoleEditor
               isTextMode={true}
@@ -118,14 +116,10 @@ class Item extends Component {
               onRoleChanged={this.updateRole}
             />
           </td>
-          <td>{Utils.bytesToSize(item.quota_usage)}</td>
+          <td>{Utils.bytesToSize(item.quota_usage)}{item.quota > 0 ? `/ ${Utils.bytesToSize(item.quota)}` : ''}</td>
+          <td>{moment(item.ctime).format('YYYY-MM-DD hh:mm:ss')}</td>
           <td>
-            <span className="item-meta-info">
-              {moment(item.ctime).format('YYYY-MM-DD hh:mm:ss')}{' / '}{item.expiration ? moment(item.expiration).format('llll') : '--'}
-            </span>
-          </td>
-          <td>
-            <a href="#" className={deleteIconClassName} title={gettext('Delete')} onClick={this.toggleDeleteDialog}></a>
+            <a href="#" className={`action-icon sf2-icon-delete ${isOpIconShown ? '' : 'invisible'}`} title={gettext('Delete')} onClick={this.toggleDeleteDialog}></a>
           </td>
         </tr>
         {isDeleteDialogOpen &&
@@ -206,12 +200,12 @@ class Orgs extends Component {
     });
   }
 
-  addOrg = (orgInfo) => {
-    seafileAPI.sysAdminAddOrg(orgInfo.name, orgInfo.email, orgInfo.password).then(res => {
+  addOrg = (data) => {
+    const { orgName, ownerEmail, password } = data;
+    seafileAPI.sysAdminAddOrg(orgName, ownerEmail, password).then(res => {
       let orgList = this.state.orgList;
-      orgList.push(res.data);
+      orgList.unshift(res.data);
       this.setState({orgList: orgList});
-      this.toggleAddOrgDialog();
     }).catch((error) => {
       let errMessage = Utils.getErrorMsg(error);
       toaster.danger(errMessage);
