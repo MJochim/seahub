@@ -1,17 +1,16 @@
 import React, { Component, Fragment } from 'react';
 import { Button } from 'reactstrap';
+import moment from 'moment';
+import { Utils } from '../../../utils/utils';
 import { seafileAPI } from '../../../utils/seafile-api';
 import { siteRoot, loginUrl, gettext } from '../../../utils/constants';
 import toaster from '../../../components/toast';
-import { Utils } from '../../../utils/utils';
 import EmptyTip from '../../../components/empty-tip';
-import moment from 'moment';
 import Loading from '../../../components/loading';
-import OrgsNav from './orgs-nav';
-import MainPanelTopbar from '../main-panel-topbar';
 import SysAdminUserRoleEditor from '../../../components/select-editor/sysadmin-user-roles-editor';
 import SysAdminAddOrgDialog from '../../../components/dialog/sysadmin-dialog/sysadmin-add-org-dialog';
 import CommonOperationDialog from '../../../components/dialog/common-operation-dialog';
+import MainPanelTopbar from '../main-panel-topbar';
 
 class Content extends Component {
 
@@ -24,7 +23,7 @@ class Content extends Component {
     if (loading) {
       return <Loading />;
     } else if (errorMsg) {
-      return <p className="error text-center">{errorMsg}</p>;
+      return <p className="error text-center mt-4">{errorMsg}</p>;
     } else {
       const emptyTip = (
         <EmptyTip>
@@ -93,7 +92,7 @@ class Item extends Component {
   }
 
   deleteOrg = () => {
-    this.props.deleteOrg(this.props.item.org_id)
+    this.props.deleteOrg(this.props.item.org_id);
   }
 
   render() {
@@ -143,7 +142,7 @@ class Item extends Component {
   }
 }
 
-class OrgsAll extends Component {
+class Orgs extends Component {
 
   constructor(props) {
     super(props);
@@ -152,7 +151,7 @@ class OrgsAll extends Component {
       errorMsg: '',
       orgList: [],
       availableRoles: [],
-      isAddOrgDialogOpen: false,
+      isAddOrgDialogOpen: false
     };
   }
 
@@ -233,7 +232,7 @@ class OrgsAll extends Component {
   }
 
   render() {
-    let { isAddOrgDialogOpen } = this.state;
+    const { isAddOrgDialogOpen } = this.state;
     return (
       <Fragment>
         <MainPanelTopbar>
@@ -241,7 +240,9 @@ class OrgsAll extends Component {
         </MainPanelTopbar>
         <div className="main-panel-center flex-row">
           <div className="cur-view-container">
-            <OrgsNav currentItem={'all'} />
+            <div className="cur-view-path">
+              <h3 className="sf-heading">{gettext('Organizations')}</h3>
+            </div> 
             <div className="cur-view-content">
               <Content
                 loading={this.state.loading}
@@ -256,8 +257,8 @@ class OrgsAll extends Component {
         </div>
         {isAddOrgDialogOpen &&
           <SysAdminAddOrgDialog
-            toggle={this.toggleAddOrgDialog}
             addOrg={this.addOrg}
+            toggleDialog={this.toggleAddOrgDialog}
           />
         }
       </Fragment>
@@ -265,4 +266,4 @@ class OrgsAll extends Component {
   }
 }
 
-export default OrgsAll;
+export default Orgs;

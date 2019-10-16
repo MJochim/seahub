@@ -5,8 +5,8 @@ import { gettext } from '../../../utils/constants';
 import { Utils } from '../../../utils/utils';
 
 const propTypes = {
-  toggle: PropTypes.func.isRequired,
-  addOrg: PropTypes.func.isRequired,
+  toggleDialog: PropTypes.func.isRequired,
+  addOrg: PropTypes.func.isRequired
 };
 
 class SysAdminAddOrgDialog extends React.Component {
@@ -18,12 +18,12 @@ class SysAdminAddOrgDialog extends React.Component {
       password: '',
       passwordAgain: '',
       email: '',
-      name: '',
+      name: ''
     };
   }
 
   toggle = () => {
-    this.props.toggle();
+    this.props.toggleDialog();
   }
 
   inputPassword = (e) => {
@@ -81,7 +81,7 @@ class SysAdminAddOrgDialog extends React.Component {
   }
 
   render() {
-    let { errorMsg, isPasswordVisible, password, passwordAgain, email, name } = this.state;
+    const { errorMsg, isPasswordVisible, password, passwordAgain, email, name } = this.state;
     return (
       <Modal isOpen={true} toggle={this.toggle}>
         <ModalHeader toggle={this.toggle}>{gettext('Add organization')}</ModalHeader>
